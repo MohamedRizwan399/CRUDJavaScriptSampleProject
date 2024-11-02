@@ -1,17 +1,19 @@
 import './App.css';
 import {  Routes, Route, BrowserRouter, Navigate} from 'react-router-dom';
 import { useState } from 'react';
-import Aboutus from './HomePage/Aboutus';
-import Contactus from './HomePage/Contactus';
-import LoginPage from './LoginAuthentication/LoginPage';
+import Aboutus from './homePage/Aboutus';
+import Contactus from './homePage/Contactus';
+import LoginPage from './loginAuthentication/LoginPage';
 import Dashboard from './IssueManagement/Dashboardview/Dashboard';
 import IssueCreationPage from './IssueManagement/IssueCrud/IssueCreationPage';
-import PagenotFound from './HomePage/PagenotFound';
-import HeaderNavbarLogin from './HomePage/HeaderNavbarLogin';
-import Home from './HomePage/Home';
-import Footer from './HomePage/Footer';
-import FetchApi from './FetchApiData/FetchApi';
-import Demo from './HomePage/Demo';
+import PagenotFound from './homePage/PagenotFound';
+import HeaderNavbarLogin from './homePage/HeaderNavbarLogin';
+import Home from './homePage/Home';
+import Footer from './homePage/Footer';
+import FetchApi from './fetchApiData/FetchApi';
+import Demo from './homePage/Demo';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export function App() {
   const loginData = JSON.parse(localStorage.getItem("loggedInData") || "{}");
@@ -20,6 +22,7 @@ export function App() {
   return(
     <BrowserRouter>
     <div>
+      <ToastContainer/>
       {isLoggedinUser && 
         <HeaderNavbarLogin 
           isLoggedinUser={loginData}

@@ -1,8 +1,8 @@
 import React ,{Component} from 'react';
 import {connect} from 'react-redux';
-import { store } from '../ReduxStore/store';
+import { store } from '../reduxStore/store';
 import axios from 'axios'
-import { storeApiDataAction, updateCounterAction } from '../ReduxStore/Actions/Action';
+import { storeApiDataAction, updateCounterAction } from '../reduxStore/Actions/Action';
 import "../App.css"
 
 class Counter extends Component {

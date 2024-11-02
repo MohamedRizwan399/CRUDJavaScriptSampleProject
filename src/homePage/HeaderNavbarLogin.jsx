@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import "../App.css"
-import { auth } from "../LoginAuthentication/FirebaseConfig";
+import { auth } from "../loginAuthentication/FirebaseConfig";
 import { signOut } from "firebase/auth";
 
 // SampleProfileUrl - https://images.pexels.com/photos/1742370/pexels-photo-1742370.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500
@@ -23,15 +23,14 @@ const HeaderNavbarLogin = (props) => {
   }
 
   useEffect(() => {
-    console.log("Header useeffect--isLoggedinUser",isLoggedinUser)
     const checkScreenSize = () => {
-      if(window.innerWidth > 480) {
+      if (window.innerWidth > 480) {
         setMenuOpen(false)
-        console.log("SET MENU if screen > 480--",menuOpen)
       }
     }
     window.addEventListener('resize', checkScreenSize);
-    checkScreenSize()
+    checkScreenSize();
+    
     return () => {
       window.removeEventListener("resize", checkScreenSize)
     };
@@ -56,9 +55,9 @@ const HeaderNavbarLogin = (props) => {
               <li><NavLink to={"/fetch-api"}>FetchApi</NavLink></li>
               <li><NavLink to={"/demo-tasks"}>Other tasks</NavLink></li>
               <li className='header-listItem'>
-                  <img alt='' className='header-avatar' src="favicon1.ico"/>
+                  <img alt='' className='header-avatar' src={isLoggedinUser?.loggedInPhotoUrl || "favicon1.ico"}/>
               </li>
-              <li className='listItemUserTitle'>Welcome! {isLoggedinUser?.username}</li>
+              <li className='listItemUserTitle'>Welcome! <b>{isLoggedinUser?.loggedInUsername}</b></li>
               <button className='listItemLogout' onClick={logoutOnclick}>Logout</button>
             </ul>
           </nav>
