@@ -2,10 +2,12 @@ import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './LoginPage.css';
-import {emailValidator,passwordValidator} from "../Utility/regexValidator";
+import {emailValidator,passwordValidator} from "../utility/regexValidator";
 import SocialLoginComp from "./SocialLoginComp";
 import {auth, provider} from "./FirebaseConfig";
 import {signInWithPopup } from "firebase/auth";
+import { toast } from 'react-toastify';
+import {LOGIN_TOAST_INFO} from '../utility/constants'
 
 // for each time show the google accounts in the dialog
 provider.setCustomParameters({
@@ -16,13 +18,7 @@ function LoginPage(props) {
     //for navigate
     const navigateToNextPage = useNavigate();
     const {setLoggedInUser} = props;
-
-    //GLogin state
-    const [getLoginData, setLoginData] = useState({
-        loggedInUsername: "",
-        loggedInEmail: "",
-        loggedInPhotoUrl: ""
-    });
+    const [isRegisterClicked, setRegisterClicked] = useState(false);
 
     //input state
     const [input, setInput] = useState({
@@ -31,14 +27,17 @@ function LoginPage(props) {
     })
 
     //error state
-    const [errorMessage1,seterrorMessageEmail] = useState('')
-    const [errorMessage2,seterrorMessagePWD] = useState('')
+    const [errorMessage1, seterrorMessageEmail] = useState('')
+    const [errorMessage2, seterrorMessagePWD] = useState('')
+    const [errorMessage3, seterrorMessageConfirmPWD] = useState('')
+
 
     //success state
     const [successMsg, setSuccessMessage] = useState('')
 
 
     const handleChange=(e) => {
+        console.log("handle change--e.target.name--",e.target.name, "\n e.target.value--",e.target.value)
         setInput({
             ...input,
             [e.target.name]: e.target.value
@@ -58,36 +57,42 @@ function LoginPage(props) {
         console.log("pwdValidate",pwdvalidate)
 
         //for username/email
-        if(!emailValidator(input.username)) {
+        if (!emailValidator(input.username)) {
             seterrorMessagePWD("Please Enter your password*")
             return seterrorMessageEmail("Please enter valid username/email*") 
         }
 
         //for password
-        if(!passwordValidator(input.password)) {
+        if (!passwordValidator(input.password)) {
             console.log("passwordValidator")
             return seterrorMessagePWD("Please Enter your password*")
         }
 
         //static credentials to check
         else if (input.username!=="mohamedrizwan3@gmail.com" || input.password!=="Rizwan@123") {
-            return seterrorMessagePWD("Invalid password");
+            return seterrorMessagePWD("Password is Invalid. Try again")
         } else {
             storeLoginSuccessAndNavigate()
         }
     }
 
+    // register function
+    const registerClicked = () => {
+
+    }
+
+    function navigateToRegister() {
+        setRegisterClicked(!isRegisterClicked);
+        seterrorMessageEmail("");
+        seterrorMessagePWD("");
+        seterrorMessageConfirmPWD("");
+    }
+
     // handle Google signIn method
-    function googleLogin(isEnable = false) {
+    function googleLogin() {
         //signInWithRedirect(auth, provider) // alternative for Glogin
         signInWithPopup(auth, provider).then((data) => {
-            setLoginData({
-                loggedInUsername: data?.user?.displayName,
-                loggedInEmail: data?.user?.email,
-                loggedInPhotoUrl: data?.user?.photoURL
-            })
-            storeLoginSuccessAndNavigate()
-
+            storeLoginSuccessAndNavigate(data?.user)
         }).catch((e) => {
             console.error("signinpopup catch--",e)
         })
@@ -95,41 +100,64 @@ function LoginPage(props) {
     }
 
     // Stored LoginStatus in localStorage and navigate to home
-    const storeLoginSuccessAndNavigate = () => {
+    const storeLoginSuccessAndNavigate = (user) => {
         const loginObj = {
             loginSuccess: true,
-            loggedInUsername: getLoginData.loggedInUsername || "",
-            loggedInEmail: getLoginData.loggedInEmail || input?.username || "",
-            loggedInPhotoUrl: getLoginData.loggedInPhotoUrl || ""
+            loggedInUsername: user?.displayName || "",
+            loggedInEmail: user?.email || input?.username || "",
+            loggedInPhotoUrl: user?.photoURL || ""
         }
         localStorage.setItem("loggedInData", JSON.stringify(loginObj));
         setLoggedInUser(true)
         navigateToNextPage('/home')
-        console.log("page navigated and data stored in localStorage")
     }
+
+    // To show toast
+    function notifyToast() {
+        toast.info(LOGIN_TOAST_INFO);
+        return;
+    }    
 
     
     return(
         
         <div className="cover">
-            <u><h2>Login Here</h2></u>
-            <p>Sign in & let's get started</p>
+            <u><h2>{isRegisterClicked ?  "Register Here " : "Login Here "}</h2></u>
+            <p>{!isRegisterClicked ? "Sign in" : "Register here"} & let's get started</p>
             {errorMessage1.length > 0 && (
-                <div style={{marginLeft:"-130px",marginBottom:"-20px",color:"red"}}>
+                <div className="error1" style={{marginLeft:"-130px", marginBottom:"-20px", color:"red"}}>
                     {errorMessage1}
                 </div>
             )}
             <input type="text" className="input" placeholder="Enter your username/email" name="username" onChange={handleChange}/>
             {errorMessage2.length > 0 && (
-                <div style={{marginLeft:"-130px",marginBottom:"-20px",color:"red"}}>
+                <div className="error2"> 
                     {errorMessage2}
                 </div>
             )}
             <input type="text" className="input" placeholder="Enter your password" name="password"onChange={handleChange}/>
-            <button className="login-btn" onClick={loginClicked}>Login</button>
+
+            {errorMessage3.length > 0 && (
+                <div className="error3" style={{marginLeft:"-130px", marginBottom:"-20px", color:"red"}}>
+                    {errorMessage3}
+                </div>
+            )}
+            {isRegisterClicked && 
+                <input type="text" className="input" placeholder="Confirm password" name="password"onChange={handleChange}/>
+            }
+
+            {!isRegisterClicked ? (<button className="login-btn" onClick={loginClicked}>Login</button> 
+                ) : <button className="register-btn" onClick={registerClicked}>Register</button>
+            }
+            <div className="haveAnAcc">
+                {!isRegisterClicked ?  "Don't have an account ? " : "Already have an account ? "}
+                <button className="nav-registerlogin-btn" onClick={navigateToRegister}>
+                    {isRegisterClicked ? "Login here" : "Register here"}</button>
+            </div>
+
             <p className="text"> or login using</p>
 
-            <SocialLoginComp handleGoogleSignIn={googleLogin}/>
+            <SocialLoginComp handleGoogleSignIn={googleLogin} otherClick={notifyToast}/>
         </div>
         
     )

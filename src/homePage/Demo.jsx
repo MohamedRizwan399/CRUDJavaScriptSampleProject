@@ -1,6 +1,6 @@
 import React from "react";
-import Counter from "../ReduxCounter/Counter";
-import CounterFunction from "../ReduxCounter/CounterFunction";
+import Counter from "../reduxCounter/Counter";
+import CounterFunction from "../reduxCounter/CounterFunction";
 
 class Demo extends React.Component{
     constructor(props) {

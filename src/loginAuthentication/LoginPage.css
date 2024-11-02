@@ -68,15 +68,29 @@
     border-style: solid;
     text-align: center;
     padding: 2em;
+    font-size: medium;
 }
 
 input:focus{
     outline-color: rgb(32, 177, 255);
 }
 
-.login-btn{
+.error2 {
+    margin-left: -150px;
+    margin-bottom: -20px;
+    color: red;
+    align-items: start;
+}
+
+.nav-registerlogin-btn{
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.login-btn, .register-btn{
     width: 40%;
-    height: 3em;
+    height: 2em;
     background-color: rgb(32, 177, 255);
     display: flex;
     justify-content: center;
@@ -84,4 +98,6 @@ input:focus{
     transition: 0.5s;
     border-radius: 0.45em;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 20px;
 }
