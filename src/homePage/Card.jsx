@@ -1,20 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+let counter = 0;
 
-const Card = ({post}) => {
+const Card = ({post, itemArrLength, isAllCardLoaded}) => {
+  const [imageSrc, setImageSrc] = useState("favicon1.ico");
+  const handleImageLoad = () => {
+    setImageSrc(post?.img || "logo512.png");
+  }
+
+  useEffect(() => {
+    counter = counter + 1;
+    if (itemArrLength === counter) {      
+      return () => {
+        setTimeout(() => { isAllCardLoaded(true) }, 1000);
+      };
+    }
+  }, [itemArrLength, isAllCardLoaded]);
+
   return (
-    <div className='home-card'>
+      <div className='home-card'>
         <Link className='link' to={`/post/${post?.id}`}>
-        <span className='title'>{post?.title}</span>
+          <span className='title'>{post?.title}</span>
         </Link>
         <Link className='imgLink' to={'/dashboard'}>
-        <img src={post?.img} alt="" className="img" />
-        <p className='desc'>{post?.desc}</p>
-        <button className='cardButton'>Read more</button>
+          <img src={imageSrc} alt="" className="img" onLoad={handleImageLoad}/>
+          <p className='desc'>{post?.desc}</p>
+          <button className='cardButton'>Read more</button>
         </Link>
-
-        </div>
+      </div>
   )
 }
 
-export default Card
+export default Card;
