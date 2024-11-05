@@ -1,5 +1,6 @@
 import React from "react";
 import { Component } from "react";
+import { LOGIN_TOAST_INFO } from "../utility/constants";
 
 class SocialLoginComp extends Component{
     constructor(props) {
@@ -19,7 +20,7 @@ class SocialLoginComp extends Component{
 
     handleOtherAction = () => {
         const { otherClick } = this.props;
-        otherClick();
+        otherClick({textContent: LOGIN_TOAST_INFO, type: "info"});
     }
 
     render() {
