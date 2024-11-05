@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import {auth, provider} from "./firebase/FirebaseConfig";
 import {signInWithPopup } from "firebase/auth";
 import {handleCreateUserWithEmailAndPassword, handleSignInWithEmailAndPassword} from './firebase/LoginAuthCreation';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 // for each time show the google accounts in the dialog
 provider.setCustomParameters({
@@ -22,6 +23,7 @@ function LoginPage(props) {
     //for navigate
     const navigateToNextPage = useNavigate();
     const {setLoggedInUser} = props;
+    const [isLoading, setIsLoading] = useState(false);
     const [isRegisterClicked, setRegisterClicked] = useState(false);
 
     //password requirement
@@ -101,9 +103,11 @@ function LoginPage(props) {
         if (!isValidated) return;
 
         try {
+            setIsLoading(true);
             const signInwithUsername = await handleSignInWithEmailAndPassword(input.username, input.password);
             if(signInwithUsername?.success) {
                 const userObj = {
+                    loginUsernamePwdSuccess: signInwithUsername?.success,
                     displayName: input.username.slice(0,7) + "...",
                     email: input.username
                 }
@@ -118,6 +122,7 @@ function LoginPage(props) {
         } catch(e) {
             console.log("catch error login--",e)
         } finally {
+            setIsLoading(false);
         }
     }
 
@@ -134,6 +139,7 @@ function LoginPage(props) {
         }
 
         try {
+            setIsLoading(true);
             const registerWithUsername = await handleCreateUserWithEmailAndPassword(input.username, input.password);
             if (registerWithUsername?.success) {
                 notifyToast({
@@ -146,6 +152,8 @@ function LoginPage(props) {
             navigateToRegister_Login();
         } catch(e) {
             console.log("catch error register--",e)
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -188,6 +196,7 @@ function LoginPage(props) {
     const storeLoginSuccessAndNavigate = (user) => {
         const loginObj = {
             loginSuccess: true,
+            loggedInType: user?.loginUsernamePwdSuccess ? "usernamePwd" : "socialLogin", 
             loggedInUsername: user?.displayName || "",
             loggedInEmail: user?.email || input?.username || "",
             loggedInPhotoUrl: user?.photoURL || ""
@@ -266,6 +275,11 @@ function LoginPage(props) {
 
             {/* Password hint feedback dialog */}
             {isPwdFeedbackHint}
+
+            {/* Loader */}
+            {isLoading && <div className="loader">
+                <ClipLoader color="#09f" loading={isLoading} size={50} /></div>
+            }
         </div>
         
     )
