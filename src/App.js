@@ -32,7 +32,7 @@ export function App() {
       <Routes>
         {isLoggedinUser === true ? (
           <>
-            <Route path="/" element={<LoginPage/>}/>
+            <Route path="/" element={<Home/>}/>
             <Route path="/home" element={<Home/>}/>
             <Route path="/dashboard" element={<Dashboard/>}/>
             <Route path="/issuecreate" element={<IssueCreationPage/>}/>

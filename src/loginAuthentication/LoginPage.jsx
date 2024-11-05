@@ -1,18 +1,22 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './LoginPage.css';
 import {emailValidator,passwordValidator} from "../utility/regexValidator";
 import SocialLoginComp from "./SocialLoginComp";
-import {auth, provider} from "./FirebaseConfig";
-import {signInWithPopup } from "firebase/auth";
 import { toast } from 'react-toastify';
-import {LOGIN_TOAST_INFO} from '../utility/constants'
+import {auth, provider} from "./firebase/FirebaseConfig";
+import {signInWithPopup } from "firebase/auth";
+import {handleCreateUserWithEmailAndPassword, handleSignInWithEmailAndPassword} from './firebase/LoginAuthCreation';
 
 // for each time show the google accounts in the dialog
 provider.setCustomParameters({
     prompt: "select_account"
 })
+
+/**
+ * Register and Login are handled in this component using hooks concepts
+ */
 
 function LoginPage(props) {
     //for navigate
@@ -20,68 +24,149 @@ function LoginPage(props) {
     const {setLoggedInUser} = props;
     const [isRegisterClicked, setRegisterClicked] = useState(false);
 
+    //password requirement
+    const [isPwdFeedbackHint, setPwdFeedbackHint] = useState(null);
+
     //input state
     const [input, setInput] = useState({
         username: "",
-        password: ""
+        password: "",
+        confirmPassword: ""
     })
 
+    const inputUsernameRef = useRef(null);
+    const inputPasswordRef = useRef(null);
+
     //error state
-    const [errorMessage1, seterrorMessageEmail] = useState('')
-    const [errorMessage2, seterrorMessagePWD] = useState('')
-    const [errorMessage3, seterrorMessageConfirmPWD] = useState('')
-
-
-    //success state
-    const [successMsg, setSuccessMessage] = useState('')
-
+    const [errorMessageEmail, seterrorMessageEmail] = useState('')
+    const [errorMessagePassword, seterrorMessagePWD] = useState('')
+    const [errorMessageConfPassword, seterrorMessageConfirmPWD] = useState('')
 
     const handleChange=(e) => {
-        console.log("handle change--e.target.name--",e.target.name, "\n e.target.value--",e.target.value)
         setInput({
             ...input,
             [e.target.name]: e.target.value
         })
+        seterrorMessageEmail('');
+        seterrorMessagePWD('');
+        seterrorMessageConfirmPWD('');
     }
+
+    const handleFocus = (fieldName = "") => {
+        if (fieldName === "password") {
+            setPwdFeedbackHint(handlePasswordErrorFeedback());
+        }
+    }
+
+    const handleBlur = () => {
+        setPwdFeedbackHint(null);
+    }
+
+    //Handle password validation to show error text
+    const handlePasswordErrorFeedback = useCallback(() => {
+        if (input.password.length < 1) {
+            return null;
+        }
+        return (
+                <div className="password-dialog">
+                    <p>Password must meet the following requirements:</p>
+                    <ul>
+                        <li style={{ color: input.password.length >= 8 ? "green" : "red" }}>At least 8 characters</li>
+                        <li style={{ color: /[A-Z]/.test(input.password) ? "green" : "red" }}>At least one uppercase letter</li>
+                        <li style={{ color: /[a-z]/.test(input.password) ? "green" : "red" }}>At least one lowercase letter</li>
+                        <li style={{ color: /\d/.test(input.password) ? "green" : "red" }}>At least one number</li>
+                    </ul>
+                    <div>
+                        {passwordValidator(input.password) ? 
+                            <h3 style={{ color: 'green' }}>Password is valid</h3> : <h3 style={{ color: 'red' }}>Password is not valid</h3>
+                        }
+                    </div>
+                </div>
+        )    
+    }, [input.password]);
+
+    useEffect(() => {
+        setPwdFeedbackHint(handlePasswordErrorFeedback());
+    }, [input.password, handlePasswordErrorFeedback])
+
 
     // Login via username/password
-    function loginClicked(e) {
+    async function loginClicked(e) {
         e.preventDefault();
-        console.log("typed input", input)
-        seterrorMessageEmail('')
-        seterrorMessagePWD('')
-        const emailvalidate =emailValidator(input.username)
-        const pwdvalidate =passwordValidator(input.password)
+        seterrorMessageEmail('');
+        seterrorMessagePWD('');
 
-        console.log("EmailValidate",emailvalidate)
-        console.log("pwdValidate",pwdvalidate)
+        //validate username/email and password
+        const isValidated = handleValidationForUserInput(input.username, input.password);
+        if (!isValidated) return;
 
-        //for username/email
-        if (!emailValidator(input.username)) {
-            seterrorMessagePWD("Please Enter your password*")
-            return seterrorMessageEmail("Please enter valid username/email*") 
-        }
-
-        //for password
-        if (!passwordValidator(input.password)) {
-            console.log("passwordValidator")
-            return seterrorMessagePWD("Please Enter your password*")
-        }
-
-        //static credentials to check
-        else if (input.username!=="mohamedrizwan3@gmail.com" || input.password!=="Rizwan@123") {
-            return seterrorMessagePWD("Password is Invalid. Try again")
-        } else {
-            storeLoginSuccessAndNavigate()
+        try {
+            const signInwithUsername = await handleSignInWithEmailAndPassword(input.username, input.password);
+            if(signInwithUsername?.success) {
+                const userObj = {
+                    displayName: input.username.slice(0,7) + "...",
+                    email: input.username
+                }
+                storeLoginSuccessAndNavigate(userObj);
+            } else {
+                notifyToast({
+                    textContent: signInwithUsername?.data?.code + " Check your login credential and try again",
+                    type: "error"
+                })
+            }
+            
+        } catch(e) {
+            console.log("catch error login--",e)
+        } finally {
         }
     }
 
-    // register function
-    const registerClicked = () => {
+    // Register via username/password
+    const registerClicked = async () => {
+    
+        // validate username/email and password
+        const isValidated = handleValidationForUserInput(input.username, input.password);
+        if (!isValidated) return;
 
+        // validate password & confirm password
+        if (input.confirmPassword !== input.password) {
+            return seterrorMessageConfirmPWD("Confirm password should match with your password")
+        }
+
+        try {
+            const registerWithUsername = await handleCreateUserWithEmailAndPassword(input.username, input.password);
+            if (registerWithUsername?.success) {
+                notifyToast({
+                    textContent: "Registered successful!! Use your credentials to Login here!!",
+                    type: "info"
+                })
+            } else {
+                notifyToast({textContent: registerWithUsername?.data?.code, type: "error"})
+            }
+            navigateToRegister_Login();
+        } catch(e) {
+            console.log("catch error register--",e)
+        }
     }
 
-    function navigateToRegister() {
+    //handle validation for username/email and password based on input
+    function handleValidationForUserInput(username, password) {
+        if (!emailValidator(username)) {
+            seterrorMessageEmail("Please Enter valid username/email format*");
+            return false;
+        }
+
+        if (!passwordValidator(password)) {
+            seterrorMessagePWD("Please Enter your password*");
+            return false;
+        }
+        return true;
+    }
+
+    // handle navigate from Register to Login and viceversa using state change
+    function navigateToRegister_Login() {
+        inputUsernameRef.current.value = "";
+        inputPasswordRef.current.value = "";
         setRegisterClicked(!isRegisterClicked);
         seterrorMessageEmail("");
         seterrorMessagePWD("");
@@ -113,37 +198,57 @@ function LoginPage(props) {
     }
 
     // To show toast
-    function notifyToast() {
-        toast.info(LOGIN_TOAST_INFO);
+    function notifyToast({textContent, type}) {
+        if (type === "error") {
+            toast.error(textContent)
+        } else if(type === "info") {
+            toast.info(textContent);
+        }
         return;
-    }    
-
+    }
     
     return(
         
         <div className="cover">
             <u><h2>{isRegisterClicked ?  "Register Here " : "Login Here "}</h2></u>
             <p>{!isRegisterClicked ? "Sign in" : "Register here"} & let's get started</p>
-            {errorMessage1.length > 0 && (
-                <div className="error1" style={{marginLeft:"-130px", marginBottom:"-20px", color:"red"}}>
-                    {errorMessage1}
-                </div>
-            )}
-            <input type="text" className="input" placeholder="Enter your username/email" name="username" onChange={handleChange}/>
-            {errorMessage2.length > 0 && (
-                <div className="error2"> 
-                    {errorMessage2}
-                </div>
-            )}
-            <input type="text" className="input" placeholder="Enter your password" name="password"onChange={handleChange}/>
+            {errorMessageEmail.length > 0 && (<div className="error1">{errorMessageEmail}</div>)}
+            <input 
+                type="text" 
+                className="input" 
+                placeholder="Enter your username/email" 
+                name="username" 
+                onChange={handleChange} 
+                ref={inputUsernameRef}
+                onFocus={() => handleFocus("username")}
+                onBlur={handleBlur}
+            />
 
-            {errorMessage3.length > 0 && (
-                <div className="error3" style={{marginLeft:"-130px", marginBottom:"-20px", color:"red"}}>
-                    {errorMessage3}
-                </div>
+            {errorMessagePassword.length > 0 && (<div className="error2">{errorMessagePassword}</div>)}
+            <input 
+                type="text" 
+                className="input" 
+                placeholder="Enter your password" 
+                name="password" 
+                onChange={handleChange} 
+                ref={inputPasswordRef}
+                onFocus={() => handleFocus("password")}
+                onBlur={handleBlur}
+            />
+
+            {errorMessageConfPassword.length > 0 && (<div className="error3" style={{marginLeft:"-130px", marginBottom:"-20px", color:"red"}}>
+                {errorMessageConfPassword}</div>
             )}
             {isRegisterClicked && 
-                <input type="text" className="input" placeholder="Confirm password" name="password"onChange={handleChange}/>
+                <input 
+                    type="text" 
+                    className="input" 
+                    placeholder="Confirm password" 
+                    name="confirmPassword" 
+                    onChange={handleChange}
+                    onFocus={() => handleFocus("confirmPassword")}
+                    onBlur={handleBlur}
+                />
             }
 
             {!isRegisterClicked ? (<button className="login-btn" onClick={loginClicked}>Login</button> 
@@ -151,17 +256,19 @@ function LoginPage(props) {
             }
             <div className="haveAnAcc">
                 {!isRegisterClicked ?  "Don't have an account ? " : "Already have an account ? "}
-                <button className="nav-registerlogin-btn" onClick={navigateToRegister}>
+                <button className="nav-registerlogin-btn" onClick={navigateToRegister_Login}>
                     {isRegisterClicked ? "Login here" : "Register here"}</button>
             </div>
 
             <p className="text"> or login using</p>
 
             <SocialLoginComp handleGoogleSignIn={googleLogin} otherClick={notifyToast}/>
+
+            {/* Password hint feedback dialog */}
+            {isPwdFeedbackHint}
         </div>
         
     )
-        
 }
 
 export default LoginPage;

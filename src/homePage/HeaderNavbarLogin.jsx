@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import "../App.css"
-import { auth } from "../loginAuthentication/FirebaseConfig";
+import { auth } from '../loginAuthentication/firebase/FirebaseConfig';
 import { signOut } from "firebase/auth";
+// import { useAuth } from "./../loginAuthentication/firebase/FirebaseAuth"
 
 // SampleProfileUrl - https://images.pexels.com/photos/1742370/pexels-photo-1742370.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500
 const HeaderNavbarLogin = (props) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigateToNextPage = useNavigate();
   const {isLoggedinUser, setLoggedInUser} = props;
+  // const useAuthData = useAuth();
 
 
-  function logoutOnclick() {
-    signOut(auth).then(() => {
-      localStorage.removeItem("loggedInData");
-      setLoggedInUser(false)
-      navigateToNextPage("/")
-    }).catch((e) => {
-      console.error("Sign out error-->",e)
-    })
+  function logoutOnclick(isClick = false) {
+    isClick = true
+    if(isClick) {
+      auth.signOut();
+    } else {
+      signOut(auth).then(() => {
+        console.log("GLogin Successfully loggedOut")
+      }).catch((e) => {
+        console.error("Sign out error-->",e)
+      })
+    }
 
+    localStorage.removeItem("loggedInData");
+    setLoggedInUser(false);
+    navigateToNextPage("/");
+    return;
   }
 
   useEffect(() => {
+    // console.log("header screen--useAuthData--",useAuthData)
     const checkScreenSize = () => {
       if (window.innerWidth > 480) {
         setMenuOpen(false)
