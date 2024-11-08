@@ -194,6 +194,22 @@ nav ul li a:not(.active):hover{
   cursor: pointer;
 }
 
+/* Styling for dashboard */
+.title-dashboard{
+  margin-left: 10px;
+  margin-top: 25px;
+  font-weight: bold;
+  font-size: 20px;
+  color: teal;
+  text-decoration: underline;
+}
+
+.issue-btn{
+  margin-left: 10px;
+  margin-top: 20px;
+  display: block;
+}
+
 /* Styling for IssueCreation page(CRUD) */
 .form-container{
   margin-left: 10px;
@@ -220,6 +236,7 @@ nav ul li a:not(.active):hover{
 }
 
 /* Styling for Tablecreation */
+
 .table-responsive {
   margin-top: 20px;
 }
@@ -244,9 +261,11 @@ nav ul li a:not(.active):hover{
 }
 
 .delete-btn{
+  margin-left: 20px;
   color: red;
 }
 .edit-btn{
+  margin-right: 20px;
   color: teal;
 }
 
