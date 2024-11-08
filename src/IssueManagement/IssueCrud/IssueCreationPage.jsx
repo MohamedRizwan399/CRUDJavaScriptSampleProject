@@ -1,9 +1,7 @@
-import React,{useState,useEffect} from "react";
+import React,{ useState, useEffect } from "react";
 import { TableView } from "./TableView";
-import uuid from 'react-uuid';
 
-var insertbool=true;
-
+let insertbool = true;
 //get data from storage
 const getDatafromStorage = () => {
     const data = localStorage.getItem('issueData');
@@ -15,44 +13,84 @@ const getDatafromStorage = () => {
 }
 
 export const IssueCreationPage = () => {
-    const [issues, setissues]=useState(getDatafromStorage());
+    const [issues, setissues] = useState(getDatafromStorage());
+    const [isDisabled, setIsDisabled] = useState(false);
 
     //button
-    const [buttonname, setButtonName]=useState("Verify and submit");
+    const [buttonname, setButtonName] = useState("Verify and submit");
 
     //for error
-    const [errorid, seterrorID]=useState(false);
-    const [errortask, seterrorTask]=useState(false);
-    const [errorenddate, seterrorEndDate]=useState(false);
-    const [errorpriority, seterrorpriority]=useState(false);
-    const [errorassignee, seterrorAssignee]=useState(false);
-    const [errorstatus, seterrorStatus]=useState(false);
+    const [errorid, seterrorID] = useState(false);
+    const [errortask, seterrorTask] = useState(false);
+    const [errorenddate, seterrorEndDate] = useState(false);
+    const [errorpriority, seterrorpriority] = useState(false);
+    const [errorassignee, seterrorAssignee] = useState(false);
+    const [errorstatus, seterrorStatus] = useState(false);
 
     // input field states
-    const [id, setID]=useState('');
-    const [task, setTask]=useState('');
-    const [enddate, setEndDate]=useState('');
-    const [priority, setPriority]=useState('');
-    const [assignee, setAssignee]=useState('');
-    const [status, setStatus]=useState('');
+    const [id, setID] = useState('');
+    const [task, setTask] = useState('');
+    const [enddate, setEndDate] = useState('');
+    const [priority, setPriority] = useState('');
+    const [assignee, setAssignee] = useState('');
+    const [status, setStatus] = useState('');
+
+    // save data
+    useEffect(() => {
+        localStorage.setItem('issueData',JSON.stringify(issues));
+    },[issues])
+
+    let getData;
+
+    // Original data has to shown in the input field when Edit
+    const editIssue = (id) => {
+        setIsDisabled(!isDisabled); // unique Idfield is disabled..
+        console.log("From edit",id)
+        setButtonName("Edit here and verify");
+        const editable = JSON.parse(localStorage.getItem("issueData"));
+        getData = editable.find((total)=>total?.id === id);
+        setID(getData?.id);
+        setTask(getData?.task);
+        setEndDate(getData?.enddate);
+        setPriority(getData?.priority);
+        setAssignee(getData?.assignee);
+        setStatus(getData?.status);
+        insertbool = false;
+    }
+
+    //deletedata
+    const deleteIssue = (id) => {
+        let alert = window.confirm("Are you want to delete?");
+        console.log("From delete",id)
+        if (alert) {
+            const filteredIssues = issues.filter((element, index)=>  {
+                return element?.id !== id;
+            })
+            setissues(filteredIssues);
+        }
+    }
 
     //submit issue
     const submitIssue = (e) => {
         e.preventDefault();
-        if (id.length==0) {
-            console.log("id empty")
-            seterrorID(true)
-        } else {
-            seterrorID(false)
+        if (id?.length === 0) {
+            seterrorID(true);
+            return;
         }
-        if(task.length==0){seterrorTask(true)}else{seterrorTask(false)}
-        if(enddate==""){seterrorEndDate(true)}else{seterrorEndDate(false)}
-        if(priority==""){seterrorpriority(true)}else{seterrorpriority(false)}
-        if(assignee==""){seterrorAssignee(true)}else{seterrorAssignee(false)}
-        if(status==""){seterrorStatus(true)}else{seterrorStatus(false)}
+        seterrorID(false);
 
-        if(id!=="" && task!=="" && enddate!=="" && priority!=="" && assignee!="" && status!="") {
-            let issue={
+        if (task.length === 0) { seterrorTask(true) } else { seterrorTask(false) }
+        if (enddate === "") { seterrorEndDate(true) } else { seterrorEndDate(false) }
+        if (priority === "") { seterrorpriority(true) } else { seterrorpriority(false) }
+        if (assignee === "") { seterrorAssignee(true) } else { seterrorAssignee(false) }
+        if (status === "") { seterrorStatus(true) } else { seterrorStatus(false) }
+
+        if (id !== "" && task !== "" && enddate !== "" && priority !== "" && assignee !== "" && status !== "") {
+            if (isDisabled) { // revert to normal IdField
+                setIsDisabled(!isDisabled);
+                setButtonName("Verify and submit");
+            }
+            let issue = {
                 id,
                 task,
                 enddate,
@@ -60,71 +98,26 @@ export const IssueCreationPage = () => {
                 assignee,
                 status
             }
-            if(insertbool) {
-                setissues([...issues,issue]);
+
+            if (insertbool) {
+                setissues([...issues, issue]);
+            } else {
+                const editable = JSON.parse(localStorage.getItem("issueData"));
+                getData = editable.find((total) => total?.id === id);
+                getData.id = id;
+                getData.task = task;
+                getData.enddate = enddate;
+                getData.priority = priority;
+                getData.assignee = assignee;
+                getData.status = status;
+                setissues(editable);
+            }
                 setID('');
                 setTask('');
                 setEndDate('');
                 setPriority('');
                 setAssignee('');
                 setStatus('');
-                console.log("YOu are from true");
-            } else {
-                let editable=JSON.parse(localStorage.getItem("issueData"));
-                getData=editable.find((total)=>total.id==id);   
-                getData.id=id;
-                getData.task=task;
-                getData.enddate=enddate;
-                getData.priority=priority;
-                getData.assignee=assignee;
-                getData.status=status;
-                console.log("Editable data:",getData.task)
-                setissues(editable);
-            }
-        } else {
-                let editable=JSON.parse(localStorage.getItem("issueData"));
-                getData=editable.find((total)=>total.id==id);   
-                getData.id=id;
-                getData.task=task;
-                getData.enddate=enddate;
-                getData.priority=priority;
-                getData.assignee=assignee;
-                getData.status=status;
-                console.log("Editable data:",getData.task)
-                setissues(editable);        
-        }   
-    }
-
-    // save data
-    useEffect(() => {
-        localStorage.setItem('issueData',JSON.stringify(issues));
-    },[issues])
-
-    // Edit data
-    var getData;
-    const editIssue=(id)=>{
-        console.log("From edit",id)
-        let editable=JSON.parse(localStorage.getItem("issueData"));
-        getData=editable.find((total)=>total.id==id);   
-        setID(getData.id);
-        setTask(getData.task);
-        setEndDate(getData.enddate);
-        setPriority(getData.priority);
-        setAssignee(getData.assignee);
-        setStatus(getData.status);
-        insertbool=false;
-        console.log("EDIT BOOL",insertbool)        
-    }
-
-    //deletedata
-    const deleteIssue=(id) => {
-        var alert=window.confirm("Are you want to delete?")
-        console.log("From delete",id)
-        if(alert){
-            const filteredIssues=issues.filter((element,index)=>  {
-                return element.id !== id
-            })
-            setissues(filteredIssues);
         }
     }
 
@@ -132,9 +125,9 @@ export const IssueCreationPage = () => {
         <div>
             <h2 className="title-create" >Issue Creation using CRUD</h2>
             <div className="form-container">
-                <form autoComplete="off" className='form-group'onSubmit={submitIssue}>
+                <form autoComplete="off" className='form-group' onSubmit={submitIssue}>
 
-                    Your ID&emsp;&emsp;&emsp;&emsp;<input type="number" className='form-control' 
+                    Your ID&emsp;&emsp;&emsp;&emsp;<input type="number" disabled={isDisabled} className='form-control' 
                     onChange={(e)=>setID(e.target.value)} value={id} ></input>
                     {errorid ?
                         <label>Your Id is required*</label>:""
@@ -174,7 +167,7 @@ export const IssueCreationPage = () => {
 
                     Assignee:&emsp;&emsp;&emsp;
                     <select id="selectassign" onChange={(e)=>setAssignee(e.target.value)} value={assignee}>
-                        <option>XXXXX</option>
+                        <option></option>
                         <option>Name1</option>
                         <option>Name2</option>
                         <option>Name3</option>
