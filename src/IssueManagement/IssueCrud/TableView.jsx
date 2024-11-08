@@ -4,8 +4,9 @@ import {trash} from 'react-icons-kit/feather/trash'
 import {edit} from 'react-icons-kit/feather/edit'
 
 
-export const TableView = ({issues, deleteIssue, editIssue}) => {
-  return issues.map(issue=>(
+export const TableView = (props) => {
+  const {issues, deleteIssue, editIssue} = props;
+  return issues.map(issue => (
     <tr key={issue.id}>
         <td> {issue.id} </td>
         <td> {issue.task} </td>
@@ -13,10 +14,12 @@ export const TableView = ({issues, deleteIssue, editIssue}) => {
         <td> {issue.priority} </td>
         <td> {issue.assignee} </td>
         <td> {issue.status} </td>
-        <td className='edit-btn' onClick={()=>editIssue(issue.id)}>
-            <Icon icon={edit}/>&emsp;&emsp;
-            <span className='delete-btn' onClick={()=>deleteIssue(issue.id)}>
-                <Icon icon={trash}/>
+        <td className='edit-delete-action'>
+            {editIssue && editIssue !== null && <span className='edit-btn' onClick={() => editIssue(issue.id)}>
+              <Icon icon={edit}/>
+            </span>}
+            <span className='delete-btn' onClick={() => deleteIssue(issue.id)}>
+              <Icon icon={trash}/>
             </span>
         </td>
         
