@@ -1,37 +1,50 @@
 import React, { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import "../App.css"
-import { auth } from "../LoginAuthentication/FirebaseConfig";
-import { signOut } from "firebase/auth";
+import { auth } from '../loginAuthentication/firebase/FirebaseConfig';
+import { signOut, deleteUser } from "firebase/auth";
+import ClipLoader from 'react-spinners/ClipLoader';
 
 // SampleProfileUrl - https://images.pexels.com/photos/1742370/pexels-photo-1742370.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500
 const HeaderNavbarLogin = (props) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigateToNextPage = useNavigate();
   const {isLoggedinUser, setLoggedInUser} = props;
+  const [isLoading, setIsLoading] = useState(false);
+  const loggedInData = JSON.parse(localStorage.getItem("loggedInData") || "{}");
 
+  async function logoutOnclick() {
+    setIsLoading(true);
+    const user = auth?.currentUser;
+    if(loggedInData?.loggedInType === "usernamePwd") {
+      await auth.signOut();
+    } else {
+      signOut(auth).then(() => {
+        if (user) {
+          deleteUser(user);
+          console.log("User successfully deleted from Firebase.");
+        }
+        setIsLoading(false);
+      }).catch((e) => {
+        console.error("Sign out error-->",e)
+      })
+    }
 
-  function logoutOnclick() {
-    signOut(auth).then(() => {
-      localStorage.removeItem("loggedInData");
-      setLoggedInUser(false)
-      navigateToNextPage("/")
-    }).catch((e) => {
-      console.error("Sign out error-->",e)
-    })
-
+    localStorage.removeItem("loggedInData");
+    setLoggedInUser(false);
+    navigateToNextPage("/");
+    return;
   }
 
   useEffect(() => {
-    console.log("Header useeffect--isLoggedinUser",isLoggedinUser)
     const checkScreenSize = () => {
-      if(window.innerWidth > 480) {
+      if (window.innerWidth > 480) {
         setMenuOpen(false)
-        console.log("SET MENU if screen > 480--",menuOpen)
       }
     }
     window.addEventListener('resize', checkScreenSize);
-    checkScreenSize()
+    checkScreenSize();
+    
     return () => {
       window.removeEventListener("resize", checkScreenSize)
     };
@@ -56,13 +69,18 @@ const HeaderNavbarLogin = (props) => {
               <li><NavLink to={"/fetch-api"}>FetchApi</NavLink></li>
               <li><NavLink to={"/demo-tasks"}>Other tasks</NavLink></li>
               <li className='header-listItem'>
-                  <img alt='' className='header-avatar' src="favicon1.ico"/>
+                  <img src={isLoggedinUser?.loggedInPhotoUrl || "favicon1.ico"} className='header-avatar' alt='' />
               </li>
-              <li className='listItemUserTitle'>Welcome! {isLoggedinUser?.username}</li>
+              <li className='listItemUserTitle'>Welcome! <b>{isLoggedinUser?.loggedInUsername}</b></li>
               <button className='listItemLogout' onClick={logoutOnclick}>Logout</button>
             </ul>
           </nav>
         ) : (<Link className='header-loginhere' to="/">Login Here</Link>)}
+
+        {/* Loader */}
+        {isLoading && <div className="loader">
+          <ClipLoader color="#09f" loading={isLoading} size={50} /></div>
+        }
     </div>
   )
 }

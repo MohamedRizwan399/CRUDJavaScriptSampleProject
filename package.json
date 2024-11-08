@@ -1,6 +1,6 @@
 {
-  "name": "my-app",
-  "version": "0.1.0",
+  "name": "javascript-crud-with-sampletasks",
+  "version": "1.0",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.7",
@@ -18,6 +18,8 @@
     "react-redux": "^8.1.3",
     "react-router-dom": "^6.4.1",
     "react-scripts": "5.0.1",
+    "react-spinners": "^0.14.1",
+    "react-toastify": "^10.0.6",
     "react-uuid": "^1.0.3",
     "redux": "^4.2.0",
     "styled-components": "^5.3.5",
