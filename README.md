@@ -1,6 +1,7 @@
 # Javascript CRUD with SampleTasks
 
-A React application to demonstrate the comprehensive CRUD app built using ReactJS and Firebase. It demonstrates how to implement user authentication with both Google Sign-In and username/password login methods, along with other key features such as API handling, local storage CRUD operations, and managing application state using Redux. The app also leverages modern React hooks, lifecycle methods, and routing for smooth navigation between pages.
+A Javascript application to demonstrate the comprehensive **CRUD** app built using ReactJS and Firebase. It implement user authentication with both Google Sign-In and username/password login methods, along with other key features such as API handling, local storage CRUD operations, and managing application state using Redux.
+The app also leverages modern React hooks, lifecycle methods, and routing for smooth navigation between pages.
 
 ## Features
 - **User authentication with Google Sign-In**: Users can sign in using their Google accounts using Firebase for secure authentication.
