@@ -1,47 +1,63 @@
-# Getting Started with Create React App
+# Javascript CRUD with SampleTasks
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A Javascript application to demonstrate the comprehensive **CRUD** app built using ReactJS and Firebase. It implement user authentication with both Google Sign-In and username/password login methods, along with other key features such as API handling, local storage CRUD operations, and managing application state using Redux.
+The app also leverages modern React hooks, lifecycle methods, and routing for smooth navigation between pages.
 
-## Available Scripts
+## Features
+- **User authentication with Google Sign-In**: Users can sign in using their Google accounts using Firebase for secure authentication.
+- **Username/Password Authentication**: Custom username and password login using Firebse for added flexibility.
+- **CRUD Operations**: Ability to perform create, read, update, and delete operations with data stored in local storage.
+- **API Handling with Axios**: Handled API requests using Axios for fetching data from remote servers.
+- **Data Management with Redux**: Efficiently manage app state using Redux store to handle data across components.
+- **React Hooks and Lifecycle Methods**: Utilization of React hooks like useState, useEffect, useRef and lifecycle methods for optimal component behavior.
+- **Dynamic Routing**: Implemented navigation between pages with React Router for a dynamic user experience.
+- **Loader Implementation**: Display a loader during asynchronous operations to improve user experience.
+- **Responsive UI**: Fully responsive UI with styling using CSS and modern design principles.
+- **Header and Footer**: The header includes navigation tabs, and the footer provides links to "About Us" and "Contact Us" pages.
 
-In the project directory, you can run:
 
-### `npm start`
+## Prerequisites
+You need to install required version:
+- Node.js 16 LTS [Download Node.js](https://nodejs.org/)
+- Npm 8 >= or yarn
 
+## Steps to Installation
+**Step 1:** Clone the repo
+```bash
+ - https://github.com/MohamedRizwan399/CRUDJavaScriptSampleProject.git
+```
+
+**Step 2:** Install the dependencies using npm
+```bash
+ - npm install
+```
+
+**Step 3:** Run the application
+```bash
+ - npm start
+```
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `npm test`
-
+**Step 4:** Run the test suites
+```bash
+ - npm test
+```
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
-
+**Step 5:** To run build in Production, if needed
+```bash
+ - npm run build
+```
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
 ## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
@@ -57,14 +73,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/a
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
 ### Deployment
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

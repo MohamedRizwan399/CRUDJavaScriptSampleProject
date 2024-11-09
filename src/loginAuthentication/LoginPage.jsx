@@ -9,6 +9,7 @@ import {auth, provider} from "./firebase/FirebaseConfig";
 import {signInWithPopup } from "firebase/auth";
 import {handleCreateUserWithEmailAndPassword, handleSignInWithEmailAndPassword} from './firebase/LoginAuthCreation';
 import ClipLoader from 'react-spinners/ClipLoader';
+import Popup from "../popup/Popup";
 
 // for each time show the google accounts in the dialog
 provider.setCustomParameters({
@@ -24,7 +25,9 @@ function LoginPage(props) {
     const navigateToNextPage = useNavigate();
     const {setLoggedInUser} = props;
     const [isLoading, setIsLoading] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
     const [isRegisterClicked, setRegisterClicked] = useState(false);
+    const isReadInfoOnce = localStorage.getItem('isInfoRead') || false;
 
     //password requirement
     const [isPwdFeedbackHint, setPwdFeedbackHint] = useState(null);
@@ -92,6 +95,16 @@ function LoginPage(props) {
     }, [input.password, handlePasswordErrorFeedback])
 
 
+    // For show the popup initially
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowPopup(true);
+        }, 1500)
+
+        return () => clearTimeout(timer);
+    }, [])
+
+
     // Login via username/password
     async function loginClicked(e) {
         e.preventDefault();
@@ -128,7 +141,6 @@ function LoginPage(props) {
 
     // Register via username/password
     const registerClicked = async () => {
-    
         // validate username/email and password
         const isValidated = handleValidationForUserInput(input.username, input.password);
         if (!isValidated) return;
@@ -185,11 +197,10 @@ function LoginPage(props) {
     function googleLogin() {
         //signInWithRedirect(auth, provider) // alternative for Glogin
         signInWithPopup(auth, provider).then((data) => {
-            storeLoginSuccessAndNavigate(data?.user)
+            storeLoginSuccessAndNavigate(data?.user);
         }).catch((e) => {
-            console.error("signinpopup catch--",e)
+            console.error("signinpopup catch--", e);
         })
-
     }
 
     // Stored LoginStatus in localStorage and navigate to home
@@ -202,8 +213,8 @@ function LoginPage(props) {
             loggedInPhotoUrl: user?.photoURL || ""
         }
         localStorage.setItem("loggedInData", JSON.stringify(loginObj));
-        setLoggedInUser(true)
-        navigateToNextPage('/home')
+        setLoggedInUser(true);
+        navigateToNextPage('/home');
     }
 
     // To show toast
@@ -215,10 +226,20 @@ function LoginPage(props) {
         }
         return;
     }
+
+    const closePopupInfo = (isRead = false) => {
+        if(isRead) {
+            setShowPopup(false);
+            localStorage.setItem('isInfoRead', true);
+        }
+    }
     
     return(
         
         <div className="cover">
+            {/* Popup shown initially */}
+            {showPopup && !isReadInfoOnce  && (<Popup setClosePopup={closePopupInfo}/>)}
+
             <u><h2>{isRegisterClicked ?  "Register Here " : "Login Here "}</h2></u>
             <p>{!isRegisterClicked ? "Sign in" : "Register here"} & let's get started</p>
             {errorMessageEmail.length > 0 && (<div className="error1">{errorMessageEmail}</div>)}
