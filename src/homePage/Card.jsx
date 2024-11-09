@@ -10,11 +10,15 @@ const Card = ({post, itemArrLength, isAllCardLoaded}) => {
 
   useEffect(() => {
     counter = counter + 1;
-    if (itemArrLength === counter) {      
-      return () => {
-        setTimeout(() => { isAllCardLoaded(true) }, 1000);
-      };
-    }
+    const timer = setTimeout(() => {
+      if (itemArrLength === counter) {  
+        isAllCardLoaded(true) 
+      }
+    }, 1000);
+    return () => { 
+      clearTimeout(timer);
+      counter = 0;
+    };
   }, [itemArrLength, isAllCardLoaded]);
 
   return (

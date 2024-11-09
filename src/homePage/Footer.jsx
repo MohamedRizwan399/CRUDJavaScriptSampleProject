@@ -1,14 +1,11 @@
 import React from "react";
-import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import {
   Box,
   Container,
   Row,
   Column,
   FooterLink,
-  Heading,
 } from "./Footerstyle";
-import { Outlet, Link} from "react-router-dom";
   
 function Footer() {
   return (

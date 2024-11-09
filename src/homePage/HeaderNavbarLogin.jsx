@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import "../App.css"
 import { auth } from '../loginAuthentication/firebase/FirebaseConfig';
-import { signOut, deleteUser } from "firebase/auth";
+import { deleteUser } from "firebase/auth";
 import ClipLoader from 'react-spinners/ClipLoader';
 
 // SampleProfileUrl - https://images.pexels.com/photos/1742370/pexels-photo-1742370.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500
@@ -19,18 +19,22 @@ const HeaderNavbarLogin = (props) => {
     if(loggedInData?.loggedInType === "usernamePwd") {
       await auth.signOut();
     } else {
-      signOut(auth).then(() => {
+      try {
+        await auth.signOut();
         if (user) {
-          deleteUser(user);
+          await deleteUser(user);
           console.log("User successfully deleted from Firebase.");
         }
+          
+      } catch(exception) {
+        console.error("Sign out error-->",exception)
         setIsLoading(false);
-      }).catch((e) => {
-        console.error("Sign out error-->",e)
-      })
+        return;
+      }
     }
 
     localStorage.removeItem("loggedInData");
+    setIsLoading(false);
     setLoggedInUser(false);
     navigateToNextPage("/");
     return;
