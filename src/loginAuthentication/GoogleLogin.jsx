@@ -34,7 +34,7 @@ const GoogleLogin = () => {
     useEffect(() => {
         //its global google and its from client
         google.accounts.id.initialize({
-            client_id: "424905758834-2dmk59lkqblmtcmd8cmih8tb5bkp2gek.apps.googleusercontent.com",
+            client_id: "",
             callback: handleCallbackResponse
         });
         google.accounts.id.renderButton(
