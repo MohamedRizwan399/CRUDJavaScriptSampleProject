@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 const CounterFunction = () => {
     const getApiStoreData = useSelector((state) => state.apiReducer);
-    console.log("CounterFunction--getApiData---",getApiStoreData?.apiData)
     const dataItems = getApiStoreData?.apiData
     
 

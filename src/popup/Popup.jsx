@@ -11,8 +11,8 @@ const Popup = (props) => {
     return(
         <div className="popup-overlay">
             <div className="popup">
-                <img src="favicon1.ico" alt='' />
-                <p dangerouslySetInnerHTML={{__html: APP_INITIAL_POPUP_MSG}}></p>
+            <img src={`${process.env.PUBLIC_URL}/favicon1.ico`} alt="" />
+            <p dangerouslySetInnerHTML={{__html: APP_INITIAL_POPUP_MSG}}></p>
                 <button onClick={closePopup}>OK</button>
             </div>
         </div>

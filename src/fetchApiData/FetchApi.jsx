@@ -6,6 +6,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 function FetchApi() {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const thumbImage = `${process.env.PUBLIC_URL}/favicon1.ico`;
 
     const fetchData = async () => {
         //sample get api
@@ -44,13 +45,13 @@ function FetchApi() {
                     data.map((value, index) => {
                         const imageUrl = value?.urlToImage;
                         return(
-                                <div className='card' style={{width: "20rem"}} key={index}>
-                                    <img src={(imageUrl && imageUrl !== null) ? imageUrl : "favicon1.ico"} className="card-img-top" width={300} alt={value?.title}/>
-                                    <div className="card-body">
+                            <div className='card' style={{width: "20rem"}} key={index}>
+                                    <img src={(imageUrl && imageUrl !== null) ? imageUrl : thumbImage} className="card-img-top" width={300} alt={value?.title}/>
+                                    {imageUrl !== null && <div className="card-body">
                                         <h5 className="card-title">{value?.title}</h5>
                                         <p className="card-desc">{value?.description}</p><br></br>
                                         Want to Read more, <a href={value?.url || "/notfound"} target='_blank' rel='noopener noreferrer' className="btn-primary"> <span style={{fontWeight: "bold"}}>Click here</span></a>
-                                    </div>
+                                    </div>}
                                 </div>
                         );
                     })

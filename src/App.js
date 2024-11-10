@@ -1,5 +1,5 @@
 import './App.css';
-import {  Routes, Route, BrowserRouter, Navigate} from 'react-router-dom';
+import {  Routes, Route, Navigate, HashRouter} from 'react-router-dom';
 import { useState } from 'react';
 import Aboutus from './homePage/Aboutus';
 import Contactus from './homePage/Contactus';
@@ -20,7 +20,8 @@ export function App() {
   const [isLoggedinUser, setLoggedInUser] = useState(loginData?.loginSuccess === true);
 
   return(
-    <BrowserRouter>
+    //we use HashRouter instead of BrowserRouter to avoid 404 error in production build when page refreshed
+    <HashRouter>
     <div>
       <ToastContainer/>
       {isLoggedinUser && 
@@ -53,7 +54,7 @@ export function App() {
       </Routes>
       {isLoggedinUser && <Footer/>}
     </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 

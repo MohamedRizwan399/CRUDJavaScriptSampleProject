@@ -12,6 +12,7 @@ const HeaderNavbarLogin = (props) => {
   const {isLoggedinUser, setLoggedInUser} = props;
   const [isLoading, setIsLoading] = useState(false);
   const loggedInData = JSON.parse(localStorage.getItem("loggedInData") || "{}");
+  const thumbImage = `${process.env.PUBLIC_URL}/favicon1.ico`;
 
   async function logoutOnclick() {
     setIsLoading(true);
@@ -73,7 +74,7 @@ const HeaderNavbarLogin = (props) => {
               <li><NavLink to={"/fetch-api"}>FetchApi</NavLink></li>
               <li><NavLink to={"/demo-tasks"}>Other tasks</NavLink></li>
               <li className='header-listItem'>
-                  <img src={isLoggedinUser?.loggedInPhotoUrl || "favicon1.ico"} className='header-avatar' alt='' />
+                  <img src={isLoggedinUser?.loggedInPhotoUrl || thumbImage} className='header-avatar' alt='' />
               </li>
               <li className='listItemUserTitle'>Welcome! <b>{isLoggedinUser?.loggedInUsername}</b></li>
               <button className='listItemLogout' onClick={logoutOnclick}>Logout</button>
