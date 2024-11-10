@@ -7,7 +7,8 @@ class Demo extends React.Component{
         super(props);
         this.state = {
             name: "",
-            age:""
+            age:"",
+            isApiFunctionCompLoaded: true,
         }
     }
 
@@ -17,19 +18,27 @@ class Demo extends React.Component{
         })
     }
 
+    componentDidMount() {
+        this.state.isApiFunctionCompLoaded && this.setState({isApiFunctionCompLoaded: false});
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+    }
+
     render() {
-        let {name, age} = this.state;
+        const {name, age, isApiFunctionCompLoaded} = this.state;
         return (
             <div className="othertask-container">
                 <div className="instantChange-container">
-                    Enter your Name: <input type="text" onChange={e=>this.inputchange(e, "name")} />
-                    Enter your Age: <input type="number" onChange={e=>this.inputchange(e, "age")} />
+                    Enter your Name: <input type="text" onChange={e => this.inputchange(e, "name")} />
+                    Enter your Age: <input type="number" onChange={e => this.inputchange(e, "age")} />
 
                     <h1>Name: {name}<br/> Your Age: {age}</h1>
                 </div>
                     {/* This is Counter ClassComponent to do increment/decrement operation*/}
                     <hr className="headerline1" style={{ borderTop: "1px solid lightgrey" }}></hr>
-                    <Counter/>
+                    <Counter isApiCalled={isApiFunctionCompLoaded}/>
+                    
 
                     {/* This is Counter functional Component to show Api data fetched from Counter component */}
                     <hr className="headerline2" style={{ borderTop: "1px solid lightgrey" }}></hr>
