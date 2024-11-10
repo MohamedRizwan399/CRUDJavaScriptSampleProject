@@ -14,15 +14,17 @@ class Counter extends Component {
     }
 
     componentDidMount() {
+        const {isApiCalled} = this.props;
         //sample get api
-        axios.get("https://jsonplaceholder.typicode.com/posts")
-        .then((response)=>{
-            const responseData = response?.data
-            const filteredItems = responseData.filter((item) => item?.userId === 2);
-            store.dispatch(storeApiDataAction(filteredItems));
-            //this.props.apiDataAction(filteredItems)
-        })
-        
+        if(isApiCalled) {
+            axios.get("https://jsonplaceholder.typicode.com/posts")
+            .then((response)=>{
+                const responseData = response?.data
+                const filteredItems = responseData.filter((item) => item?.userId === 2);
+                store.dispatch(storeApiDataAction(filteredItems));
+                //this.props.apiDataAction(filteredItems)
+            })
+        }   
     }
 
     triggerAction = (param) => {
