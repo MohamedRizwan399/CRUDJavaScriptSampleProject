@@ -1,0 +1,375 @@
+/* Styling for the header */
+.header-navbar {
+  height: 50%;
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0; /* For Header fixed when scrolls */
+}
+
+.header-appName{
+  padding-left: 10px;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+  justify-content: space-between;
+  display: block;
+}
+
+.app-highlight{
+  color: teal;
+  font-weight: bold;
+}
+
+nav .menu { /* creates the hamburger menu using below styling properties */
+  display: none;
+  position: absolute;
+  width: 2.25rem;
+  height: 2rem;
+  top: 0.75rem;
+  right: 0.5rem;
+  flex-direction: column;
+  justify-content: space-between;
+
+}
+nav .menu span{
+  height: 0.4rem;
+  width: 100%;
+  background-color: teal;
+  border-radius: 0.2rem;
+}
+@media (max-width: 480px) {/* manage ui when screen size reduces */
+  nav .menu {
+    display: flex;
+  }
+  .header-navbar {
+    flex-direction: column;
+    align-items: start;
+  }
+  nav ul.header-list{ /* initial hide, if clicks open */
+    display: none;
+  }
+  nav ul {
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+  nav ul.open-headerList{
+    display: flex;
+    justify-content: center;
+    padding: 50px 100px;
+    align-items: center;
+  }
+  nav ul li {
+    width: 100%;
+    text-align: center;
+  }
+  nav ul li a {
+    margin: 0.2rem 0.5rem;
+  }
+
+  .header-listItem, .listItemUserTitle{/* hide the profile,name icon */
+    display: none;
+  }
+  .home, .home-card{/* align the card items */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+nav ul {
+  display: flex;
+}
+nav ul li{
+  list-style: none;
+}
+nav ul li a {
+  display: block;
+  text-decoration: none;
+  color: white;
+  padding: 0.5rem;
+  margin: 0 0.5rem;
+  border-radius: 0.5rem;
+}
+nav ul li a:not(.active):hover{
+  background-color: rgb(2, 85, 85);
+}
+.active{
+  background-color: teal;
+}
+
+
+.header-list{
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding-right: 10px;
+}
+.header-listItem{
+  margin-top: 5px;
+  margin-right: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.header-avatar{
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+.header-loginhere{
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  padding-right: 10px;
+}
+
+.listItemUserTitle{
+  margin-right: 20px;
+}
+
+.listItemLogout{
+  width: fit-content;
+  height: 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.listItemLogout:hover{
+  background-color: teal;
+  transition: 200ms ease-in;
+  color: white;
+  border-color: white;
+}
+
+/* styling for HomePage */
+.home{
+  height: fit-content;
+  display: flex;
+  padding: 50px 100px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.home-card{
+  height: 100%;
+  width: 30%;
+  padding: 10px;
+  padding-bottom: 80px;
+}
+
+@media (min-width: 900px) {
+  .home-card:hover{
+    box-shadow: 0 0 12px 3px rgba(0, 0, 0, 1.5);
+  }
+}
+
+.img{
+  width: 100%;
+  height: 80% ;
+}
+
+.desc{
+  color: #333;
+  margin-bottom: 5px;
+  line-height: 15px;
+}
+
+.cardButton{
+  border: none;
+  border-radius: 10px;
+  background-color: teal;
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Styling for dashboard */
+.title-dashboard{
+  margin-left: 10px;
+  margin-top: 25px;
+  font-weight: bold;
+  font-size: 20px;
+  color: teal;
+  text-decoration: underline;
+}
+
+.issue-btn{
+  margin-left: 10px;
+  margin-top: 20px;
+  display: block;
+}
+
+/* Styling for IssueCreation page(CRUD) */
+.form-container{
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 12%;
+}
+
+.title-create{
+  margin-top: 10px;
+  margin-left: 10px;
+  text-decoration: underline;
+}
+
+.form-view-container{
+  margin-left: 10px;
+  margin-top: 20px;
+}
+
+.no-issues{
+  font-size: 20px;
+  margin-top: 20px;
+  margin-left: 10px;
+  color: maroon;
+}
+
+/* Styling for Tablecreation */
+
+.table-responsive {
+  margin-top: 20px;
+}
+.table-responsive table {
+  width: 50%;
+  border-collapse: collapse; /* Removes spacing between cells */
+}
+
+.table-responsive th, .table-responsive td {
+  padding: 8px 12px;
+  text-align: left;
+  border: 1px solid #ddd; /* Adds a border around each cell */
+}
+
+.table-responsive th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.table-responsive tr:nth-child(odd) {/* Alternating row */
+  background-color: #f9f9f9;
+}
+
+.delete-btn{
+  margin-left: 20px;
+  color: red;
+}
+.edit-btn{
+  margin-right: 20px;
+  color: teal;
+}
+
+/* Styling for FetchApi */
+.btn-fetchContainer{
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.btn-fetch{
+  color: white;
+  background-color: teal;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.btn-fetch:hover{
+  color: black;
+}
+
+.ui-fetched{
+  height: fit-content;
+  display: flex;
+  padding: 50px 100px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.card-title{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Styling for Demo */
+.othertask-container{
+  margin-top: 20px;
+}
+.instantChange-container{
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+.instantChange-container h1{
+  text-align: center;
+}
+.headerline1, .headerline2{
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* Styling for Counter component */
+.counter-container{
+  margin-left: 20px;
+  font-weight: bold;
+  flex-direction: column;
+}
+.counter-value{
+  margin-bottom: 10px;
+  font-size: 30px;
+}
+.btn-inc{
+  margin-bottom: 10px;
+}
+.get-value{
+  margin-top: 10px;
+}
+.get-value-title{
+  color: teal;
+}
+
+.showApiDataContainer{
+  margin-left: 20px;
+}
+.showApiData-list{
+  margin-top: 10px;
+}
+
+/*Styling for Aboutus and Contactus*/
+.aboutus{
+  text-align: center;
+  display: flex;
+  align-items: center;
+  height: 50vh;
+}
+.contactus{
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Styling for loader*/
+.loader {
+  top: 0;
+  left: 0;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}

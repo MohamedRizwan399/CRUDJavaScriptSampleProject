@@ -1,0 +1,177 @@
+*{
+    margin:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}         
+
+.page{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Styling for alternate type Login*/
+.cover{
+    background-color: aqua;
+    width: 30em;
+    height: 35em;
+    position: relative;
+    margin-left: 80ex;
+    margin-top: 45px;
+    border-radius: 1em;
+    box-shadow: 0 0.188em 1.550em rgb(156, 156, 156);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.alt-login{
+    width: 60%;
+    height: 50px;
+    display: flex;
+    justify-content: space-around;
+}
+.facebook, .google{
+    margin-right: 10px;
+}
+
+.alt-login div{
+    width: 45%;
+    height: 95%;
+    border-radius: 0.45em;
+    background-color: black;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.google{
+    background-image: url("../assets/google.png");
+}
+.facebook{
+    background-image: url("../assets/facebook.png");
+}
+.github{
+    background-image: url("../assets/github.png");
+
+}
+
+/* Styling for input type Login*/
+.input {
+    border: none;
+    background-color: rgb(229, 226, 226);
+    height: 4em;
+    width: 80%;
+    border-radius: 0.45em;
+    border-style: solid;
+    text-align: center;
+    padding: 2em;
+    font-size: medium;
+}
+
+input:focus{
+    outline-color: rgb(32, 177, 255);
+}
+
+.password-dialog {
+    position: absolute;
+    top: 40%;
+    left: 100%;
+    margin-left: 10px;
+    width: 20em;
+    padding: 1em;
+    background-color: rgb(250, 250, 250);
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
+    font-size: medium;
+    color: #333;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.password-dialog p {
+    font-weight: bold;
+    margin: 0 0 0.5em 0;
+}
+
+.password-dialog ul {
+    list-style: none;
+    padding: 0;
+}
+
+.password-dialog li, h3 {
+    margin-left: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.error1, .error2 {
+    margin-left: -130px !important;
+    margin-bottom: -20px;
+    color: red;
+}
+
+.nav-registerlogin-btn{
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.login-btn, .register-btn{
+    width: 40%;
+    height: 2em;
+    background-color: rgb(32, 177, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s;
+    border-radius: 0.45em;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+/* Styling for loader*/
+.loader {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1;
+}
+
+/* Styling for Popup*/
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+.popup {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 500px; /* Limit the max width */
+    width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+}
+  
+.popup button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
