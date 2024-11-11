@@ -14,10 +14,10 @@ function Footer() {
       <Container>
         <Row>
           <Column>
-            <FooterLink href="./aboutus">About Us</FooterLink><br></br>
+            <FooterLink href="#/aboutus">About Us</FooterLink><br></br>
           </Column>
           <Column>
-            <FooterLink href="./contactus">Contact Us</FooterLink><br></br>
+            <FooterLink href="#/contactus">Contact Us</FooterLink><br></br>
           </Column>
 
         </Row>
