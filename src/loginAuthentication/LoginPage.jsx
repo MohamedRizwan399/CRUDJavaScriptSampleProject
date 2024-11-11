@@ -194,12 +194,12 @@ function LoginPage(props) {
     }
 
     // handle Google signIn method
-    function googleLogin() {
+    async function googleLogin() {
         //signInWithRedirect(auth, provider) // alternative for Glogin
-        signInWithPopup(auth, provider).then((data) => {
+        await signInWithPopup(auth, provider).then((data) => {
             storeLoginSuccessAndNavigate(data?.user);
         }).catch((e) => {
-            console.error("signinpopup catch--", e);
+            console.error("signinpopup catch--", e);    
         })
     }
 
