@@ -2,7 +2,9 @@ import React ,{useEffect, useState} from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import ClipLoader from 'react-spinners/ClipLoader';
+import { posts } from '../homePage/data';
 
+//Sample url(local env) - https://newsapi.org/v2/top-headlines?country=us&apiKey=6004b8fcb1604003b4ead57854e8d2c2
 function FetchApi() {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -12,9 +14,9 @@ function FetchApi() {
         //sample get api
         try {
             setIsLoading(true);
-            await axios.get("https://newsapi.org/v2/top-headlines?country=us&apiKey=6004b8fcb1604003b4ead57854e8d2c2")
+            await axios.get("https://api.thecatapi.com/v1/images/search?limit=10")
             .then((response) => {
-                setData(response?.data?.articles);
+                setData(response?.data);
             })
         } catch (e) {
             console.error(e);
@@ -37,19 +39,19 @@ function FetchApi() {
     return (
         <>
             <div className="btn-fetchContainer">
-                <button className='btn-fetch' onClick={data.length > 0 ? showToast : fetchData}>Click here to Fetch Api Data!!</button>
+                <button className='btn-fetch' onClick={data?.length > 0 ? showToast : fetchData}>Click here to Fetch Api Data!!</button>
             </div>
 
             <div className="ui-fetched">
                 {
                     data.map((value, index) => {
-                        const imageUrl = value?.urlToImage;
+                        const imageUrl = value?.url;
                         return(
                             <div className='card' style={{width: "20rem"}} key={index}>
                                     <img src={(imageUrl && imageUrl !== null) ? imageUrl : thumbImage} className="card-img-top" width={300} alt={value?.title}/>
                                     {imageUrl !== null && <div className="card-body">
-                                        <h5 className="card-title">{value?.title}</h5>
-                                        <p className="card-desc">{value?.description}</p><br></br>
+                                        <h5 className="card-title">{value?.id}</h5>
+                                        <p className="card-desc">{posts[0]?.desc}</p><br></br>
                                         Want to Read more, <a href={value?.url || "/notfound"} target='_blank' rel='noopener noreferrer' className="btn-primary"> <span style={{fontWeight: "bold"}}>Click here</span></a>
                                     </div>}
                                 </div>
