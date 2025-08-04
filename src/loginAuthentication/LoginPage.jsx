@@ -24,7 +24,7 @@ function LoginPage(props) {
     //for navigate
     const navigateToNextPage = useNavigate();
     const {setLoggedInUser} = props;
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
     const [isRegisterClicked, setRegisterClicked] = useState(false);
     const isReadInfoOnce = localStorage.getItem('isInfoRead') || false;
@@ -47,24 +47,39 @@ function LoginPage(props) {
     const [errorMessagePassword, seterrorMessagePWD] = useState('')
     const [errorMessageConfPassword, seterrorMessageConfirmPWD] = useState('')
 
+    const handleKeyListeners = (e) => {
+        if (e.shiftKey === false && e.which === 13) {
+            e.preventDefault();
+            // handle Enter key to execute
+            if (isRegisterClicked) registerClicked();
+            else loginClicked();
+        }
+
+    }
+
     const handleChange=(e) => {
+        const inputValueWithoutWhiteSpace = e.target.value.replace(/\s+/, "");
         setInput({
             ...input,
-            [e.target.name]: e.target.value
+            [e.target.name]: inputValueWithoutWhiteSpace
         })
         seterrorMessageEmail('');
         seterrorMessagePWD('');
         seterrorMessageConfirmPWD('');
     }
 
-    const handleFocus = (fieldName = "") => {
+    const handleFocusForPasswordFeedback = (fieldName = "") => {
         if (fieldName === "password") {
             setPwdFeedbackHint(handlePasswordErrorFeedback());
         }
     }
 
-    const handleBlur = () => {
+    const handleBlurForPasswordFeedback = () => {
         setPwdFeedbackHint(null);
+    }
+
+    const handleInputFieldFocus = (inputId = "") => {
+        document.getElementById(inputId).focus();
     }
 
     //Handle password validation to show error text
@@ -80,6 +95,7 @@ function LoginPage(props) {
                         <li style={{ color: /[A-Z]/.test(input.password) ? "green" : "red" }}>At least one uppercase letter</li>
                         <li style={{ color: /[a-z]/.test(input.password) ? "green" : "red" }}>At least one lowercase letter</li>
                         <li style={{ color: /\d/.test(input.password) ? "green" : "red" }}>At least one number</li>
+                        <li style={{ color: /[^a-zA-Z0-9\s]/.test(input.password) ? "green" : "red" }}>At least one special character</li>
                     </ul>
                     <div>
                         {passwordValidator(input.password) ? 
@@ -99,6 +115,7 @@ function LoginPage(props) {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowPopup(true);
+            setIsLoading(false);
         }, 1500)
 
         return () => clearTimeout(timer);
@@ -107,7 +124,6 @@ function LoginPage(props) {
 
     // Login via username/password
     async function loginClicked(e) {
-        e.preventDefault();
         seterrorMessageEmail('');
         seterrorMessagePWD('');
 
@@ -117,6 +133,7 @@ function LoginPage(props) {
 
         try {
             setIsLoading(true);
+            setPwdFeedbackHint(null);
             const signInwithUsername = await handleSignInWithEmailAndPassword(input.username, input.password);
             if(signInwithUsername?.success) {
                 const userObj = {
@@ -146,12 +163,17 @@ function LoginPage(props) {
         if (!isValidated) return;
 
         // validate password & confirm password
-        if (input.confirmPassword !== input.password) {
+        if (input.confirmPassword.length > 0 && (input.confirmPassword !== input.password)) {
+            handleInputFieldFocus("confirmPassword");
             return seterrorMessageConfirmPWD("Confirm password should match with your password")
+        } else if (input.confirmPassword !== input.password) {
+            handleInputFieldFocus("confirmPassword");
+            return seterrorMessageConfirmPWD("Enter your password here to confirm*")
         }
 
         try {
             setIsLoading(true);
+            setPwdFeedbackHint(null);
             const registerWithUsername = await handleCreateUserWithEmailAndPassword(input.username, input.password);
             if (registerWithUsername?.success) {
                 notifyToast({
@@ -159,7 +181,11 @@ function LoginPage(props) {
                     type: "info"
                 })
             } else {
-                notifyToast({textContent: registerWithUsername?.data?.code, type: "error"})
+                const emailErrorText = "Email already registered, use email to SignIn/Login here.";
+                notifyToast({
+                    textContent: (registerWithUsername?.data?.code === "auth/email-already-in-use") ? emailErrorText : registerWithUsername?.data?.code,
+                    type: "error"
+                })
             }
             navigateToRegister_Login();
         } catch(e) {
@@ -172,12 +198,14 @@ function LoginPage(props) {
     //handle validation for username/email and password based on input
     function handleValidationForUserInput(username, password) {
         if (!emailValidator(username)) {
-            seterrorMessageEmail("Please Enter valid username/email format*");
+            seterrorMessageEmail("Enter valid username/email format*");
+            handleInputFieldFocus("username");
             return false;
         }
 
         if (!passwordValidator(password)) {
-            seterrorMessagePWD("Please Enter your password*");
+            seterrorMessagePWD(!isRegisterClicked ? "Enter your valid password*" : "Enter your password here");
+            handleInputFieldFocus("password");
             return false;
         }
         return true;
@@ -188,6 +216,12 @@ function LoginPage(props) {
         inputUsernameRef.current.value = "";
         inputPasswordRef.current.value = "";
         setRegisterClicked(!isRegisterClicked);
+        setInput({
+            username: "",
+            password: "",
+            confirmPassword: ""
+        })
+        handleInputFieldFocus("username");
         seterrorMessageEmail("");
         seterrorMessagePWD("");
         seterrorMessageConfirmPWD("");
@@ -231,39 +265,44 @@ function LoginPage(props) {
         if(isRead) {
             setShowPopup(false);
             localStorage.setItem('isInfoRead', true);
+            handleInputFieldFocus("username");
         }
     }
     
     return(
         
-        <div className="cover">
+        <div className="cover" onKeyDown={(e) => {handleKeyListeners(e)}}>
             {/* Popup shown initially */}
-            {showPopup && !isReadInfoOnce  && (<Popup setClosePopup={closePopupInfo}/>)}
+            {showPopup && !isReadInfoOnce  && (<Popup setClosePopup={closePopupInfo} stopLoader={setIsLoading}/>)}
 
             <u><h2>{isRegisterClicked ?  "Register Here " : "Login Here "}</h2></u>
             <p>{!isRegisterClicked ? "Sign in" : "Register here"} & let's get started</p>
             {errorMessageEmail.length > 0 && (<div className="error1">{errorMessageEmail}</div>)}
             <input 
+                id="username"
                 type="text" 
                 className="input" 
                 placeholder="Enter your username/email" 
                 name="username" 
                 onChange={handleChange} 
+                value={input.username}
                 ref={inputUsernameRef}
-                onFocus={() => handleFocus("username")}
-                onBlur={handleBlur}
+                onFocus={() => handleFocusForPasswordFeedback("username")}
+                onBlur={handleBlurForPasswordFeedback}
             />
 
             {errorMessagePassword.length > 0 && (<div className="error2">{errorMessagePassword}</div>)}
             <input 
+                id="password"
                 type="text" 
                 className="input" 
                 placeholder="Enter your password" 
                 name="password" 
                 onChange={handleChange} 
+                value={input.password}
                 ref={inputPasswordRef}
-                onFocus={() => handleFocus("password")}
-                onBlur={handleBlur}
+                onFocus={() => handleFocusForPasswordFeedback("password")}
+                onBlur={handleBlurForPasswordFeedback}
             />
 
             {errorMessageConfPassword.length > 0 && (<div className="error3" style={{marginLeft:"-130px", marginBottom:"-20px", color:"red"}}>
@@ -271,13 +310,15 @@ function LoginPage(props) {
             )}
             {isRegisterClicked && 
                 <input 
+                    id="confirmPassword"
                     type="text" 
                     className="input" 
                     placeholder="Confirm password" 
                     name="confirmPassword" 
                     onChange={handleChange}
-                    onFocus={() => handleFocus("confirmPassword")}
-                    onBlur={handleBlur}
+                    value={input.confirmPassword}
+                    onFocus={() => handleFocusForPasswordFeedback("confirmPassword")}
+                    onBlur={handleBlurForPasswordFeedback}
                 />
             }
 
