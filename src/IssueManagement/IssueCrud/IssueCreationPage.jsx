@@ -100,6 +100,11 @@ export const IssueCreationPage = () => {
             }
 
             if (insertbool) {
+                const isIdAlreadyExists = issues?.find(issue => issue?.id === id);
+                if(isIdAlreadyExists !== undefined && isIdAlreadyExists?.id === id) {
+                    alert("ID is already Exists. Check your created issues list to edit or create new issue using different Id.")
+                    return;
+                }
                 setissues([...issues, issue]);
             } else {
                 const editable = JSON.parse(localStorage.getItem("issueData"));
@@ -140,14 +145,8 @@ export const IssueCreationPage = () => {
                     }<br></br><br></br>
 
                     End date:&emsp;&emsp;&emsp;
-                    <select id="selectend" onChange={(e)=>setEndDate(e.target.value)} value={enddate}>
-                        <option></option>
-                        <option>OCT 1</option>
-                        <option>OCT 2</option>
-                        <option>OCT 3</option>
-                        <option>OCT 3</option>
-                        <option>OCT 5</option>
-                    </select>
+                    <input id="selectend" type="date" onChange={(e)=>setEndDate(e.target.value)} value={enddate}/>
+
                     {errorenddate?
                         <label>Select End Date for this issue*</label>:""
                     }<br></br><br></br>
@@ -181,7 +180,7 @@ export const IssueCreationPage = () => {
                         <option></option>
                         <option>OPEN</option>
                         <option>INPROGRESS</option>
-                        <option>CLOSED</option>
+                        {!insertbool && <option>CLOSED</option>}
                     </select>
                     {errorstatus?
                         <label>Please select the status*</label>:""
