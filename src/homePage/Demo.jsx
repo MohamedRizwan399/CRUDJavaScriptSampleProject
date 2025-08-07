@@ -31,7 +31,7 @@ class Demo extends React.Component{
             <div className="othertask-container">
                 <div className="instantChange-container">
                     Enter your Name: <input type="text" onChange={e => this.inputchange(e, "name")} />
-                    Enter your Age: <input type="number" onChange={e => this.inputchange(e, "age")} />
+                    Enter your Age: <input type="range" min="1" max="99" onChange={e => this.inputchange(e, "age")} />
 
                     <h1>Name: {name}<br/> Your Age: {age}</h1>
                 </div>
