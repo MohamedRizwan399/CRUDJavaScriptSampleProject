@@ -373,3 +373,12 @@ nav ul li a:not(.active):hover{
   align-items: center;
   z-index: 1;
 }
+
+/*styling for popup*/
+.popup-overlay .popup .popup-button {
+  padding: 10px;
+  border-radius: 10px;
+}
+.popup-overlay .popup .popup-button:hover{
+  background-color: aqua;
+}
