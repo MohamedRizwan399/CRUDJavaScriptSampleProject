@@ -20,6 +20,8 @@ function FetchApi() {
             })
         } catch (e) {
             console.error(e);
+            if (toast.length > 1) { toast.dismiss() }
+            toast.error(e.toString())
         } finally {
             setIsLoading(false);
         }
@@ -50,13 +52,13 @@ function FetchApi() {
                         const imageUrl = value?.url;
                         return(
                             <div className='card' style={{width: "20rem"}} key={index}>
-                                    <img src={(imageUrl && imageUrl !== null) ? imageUrl : thumbImage} className="card-img-top" width={300} alt={value?.title}/>
-                                    {imageUrl !== null && <div className="card-body">
-                                        <h5 className="card-title">{value?.id}</h5>
-                                        <p className="card-desc">{posts[0]?.desc}</p><br></br>
-                                        Want to Read more, <a href={value?.url || "/notfound"} target='_blank' rel='noopener noreferrer' className="btn-primary"> <span style={{fontWeight: "bold"}}>Click here</span></a>
-                                    </div>}
-                                </div>
+                                <img src={(imageUrl && imageUrl !== null) ? imageUrl : thumbImage} className="card-img-top" width={300} alt={value?.title}/>
+                                {imageUrl !== null && <div className="card-body">
+                                    <h5 className="card-title">{value?.id}</h5>
+                                    <p className="card-desc">{posts[0]?.desc}</p><br></br>
+                                    Want to Read more, <a href={value?.url || "/notfound"} target='_blank' rel='noopener noreferrer' className="btn-primary"> <span style={{fontWeight: "bold"}}>Click here</span></a>
+                                </div>}
+                            </div>
                         );
                     })
                 }
