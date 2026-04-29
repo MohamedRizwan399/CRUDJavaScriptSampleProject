@@ -44,7 +44,7 @@ export const IssueCreationPage = () => {
 
     // Original data has to shown in the input field when Edit
     const editIssue = (id) => {
-        setIsDisabled(!isDisabled); // unique Idfield is disabled..
+        (isDisabled === false) && setIsDisabled(!isDisabled); // uniqueId field is set to disabled..
         console.log("From edit",id)
         setButtonName("Edit here and verify");
         const editable = JSON.parse(localStorage.getItem("issueData"));
@@ -209,8 +209,10 @@ export const IssueCreationPage = () => {
                                         <th scope="col">STATUS</th>
                                         <th scope="col">EDIT/DELETE</th>
                                     </tr>
-                                    <TableView issues={issues} deleteIssue={deleteIssue} editIssue={editIssue}/>
                                 </thead>
+                                <tbody id="tablebody">
+                                    <TableView issues={issues} deleteIssue={deleteIssue} editIssue={editIssue}/>
+                                </tbody>
                             </table>
                         </div>
                     </>
