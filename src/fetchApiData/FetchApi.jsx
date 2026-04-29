@@ -33,7 +33,9 @@ function FetchApi() {
     }, [isLoading]);
 
     const showToast = () => {
-        toast.info("Data Already Fetched!!")
+        if (toast.length > 1) { toast.dismiss() }
+        toast.info("Data Already Fetched!!");
+        return;
     }
 
     return (
