@@ -10,6 +10,7 @@ import {signInWithPopup } from "firebase/auth";
 import {handleCreateUserWithEmailAndPassword, handleSignInWithEmailAndPassword} from './firebase/LoginAuthCreation';
 import ClipLoader from 'react-spinners/ClipLoader';
 import Popup from "../popup/Popup";
+import { NETWORK_FAILURE_MSG } from "../utility/constants";
 
 // for each time show the google accounts in the dialog
 provider.setCustomParameters({
@@ -135,7 +136,7 @@ function LoginPage(props) {
             setIsLoading(true);
             setPwdFeedbackHint(null);
             const signInwithUsername = await handleSignInWithEmailAndPassword(input.username, input.password);
-            if(signInwithUsername?.success) {
+            if (signInwithUsername?.success) {
                 const userObj = {
                     loginUsernamePwdSuccess: signInwithUsername?.success,
                     displayName: input.username.slice(0,7) + "...",
@@ -143,9 +144,11 @@ function LoginPage(props) {
                 }
                 storeLoginSuccessAndNavigate(userObj);
             } else {
+                const isNetworkFails = (signInwithUsername?.data?.code === "auth/network-request-failed") ? true : false;
+                const callbackMessage = signInwithUsername?.data?.code + " Check your login credentials and try again";
                 notifyToast({
-                    textContent: signInwithUsername?.data?.code + " Check your login credential and try again",
-                    type: "error"
+                    textContent: isNetworkFails ? NETWORK_FAILURE_MSG : callbackMessage,
+                    type: isNetworkFails ? "warn" : "error"
                 })
             }
             
@@ -253,11 +256,12 @@ function LoginPage(props) {
 
     // To show toast
     function notifyToast({textContent, type}) {
+        if (toast.length > 1) { toast.dismiss() }
         if (type === "error") {
             toast.error(textContent)
-        } else if(type === "info") {
+        } else if (type === "info") {
             toast.info(textContent);
-        }
+        } else if (type === "warn") { toast.warn(textContent) }
         return;
     }
 
